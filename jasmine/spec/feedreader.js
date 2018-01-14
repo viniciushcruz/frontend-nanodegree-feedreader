@@ -29,6 +29,7 @@ $(function () {
 
     it('Allfeeds should have a url defined', function () {
       allFeeds.forEach(function (feed) {
+        expect(feed.url.length).not.toBe(0);
         expect(feed.url).toBeDefined();
       })
     });
@@ -46,21 +47,21 @@ $(function () {
   describe('The menu', function () {
 
     it('the menu element should be hide by default', function () {
-      var menu = $('body').attr("class");
+      var menu = $('body');
 
-      expect(menu).toBe('menu-hidden');
+      expect(menu.hasClass('menu-hidden')).toBe(true);
 
     });
 
     it('the menu element should be hide by default', function () {
       var menu = $('body');
-      var menuIcon = $('.menu-icon-link')[0];
+      var menuIcon = $('.menu-icon-link');
 
       menuIcon.click();
-      expect(menu.attr("class")).not.toBe('menu-hidden');
+      expect(menu.hasClass('menu-hidden')).toBe(false);
 
       menuIcon.click();
-      expect(menu.attr("class")).toBe('menu-hidden');
+      expect(menu.hasClass('menu-hidden')).toBe(true);
 
     });
 
@@ -70,51 +71,36 @@ $(function () {
   describe('Initial Entries', function () {
 
     beforeEach(function (done) {
-      setTimeout(function () {
-        loadFeed(0, function () {
-          done();
-        });
-
-      }, 2000);
+      loadFeed(0, function () {
+        done();
+      });
     });
 
 
-    it('the loadFeed function should execution correctly', function (done) {
+    it('the loadFeed function should execution correctly', function () {
       var feed = $('.feed .entry');
 
       expect(feed.length).not.toBe(0);
-      done();
     });
 
   });
 
   describe('New Feed Selection', function () {
 
+    var feed;
     beforeEach(function (done) {
-      setTimeout(function () {
-        loadFeed(0, function () {
+      loadFeed(0, function () {
+        feed = $('.feed').html();
+        loadFeed(2, function () {
           done();
         });
-      }, 2000);
+      });
     });
 
-    it('Guarantee that when load a new content the feed is change', function (done) {
-      var feed = $('.feed .entry-link');
+    it('Guarantee that when load a new content the feed is change', function () {
+      var newFeed = $('.feed').html();
 
-      expect(feed.length).not.toBe(0);
-      expect(feed.attr("href")).toContain('http://blog.udacity.com');
-
-      setTimeout(function () {
-        loadFeed(2, function () {
-          var feed = $('.feed .entry-link');
-
-          expect(feed.length).not.toBe(0);
-          expect(feed.attr("href")).toContain('http://feedproxy.google.com');
-
-          done();
-        });
-      }, 2000);
-
+      expect(feed).not.toEqual(newFeed);
     });
 
   });
